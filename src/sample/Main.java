@@ -20,7 +20,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(200);
         primaryStage.show();
         //System.out.println(primaryStage.getScene().toString());
-        //писька
+       // две письки !
     }
 
 
