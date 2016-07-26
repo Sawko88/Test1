@@ -27,5 +27,6 @@ public class Controller {
         app_stage.setWidth(630);
         app_stage.setHeight(400);
         app_stage.show();
+
     }
 }
