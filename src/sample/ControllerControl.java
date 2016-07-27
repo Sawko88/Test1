@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -56,4 +57,28 @@ public class ControllerControl implements Initializable {
     }
 
 
+    public void conSerCl(ActionEvent actionEvent) {
+        try {
+            ap1.setVisible(true);
+
+            //Socket socCl = new Socket(ipAdrCl.getText(), Integer.parseInt(portCl.getText().toString()));
+            Socket socCl = new Socket("84.204.102.210", 6009);
+            System.out.println("Socket conect");
+
+            String mess = "imei=79811050470&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614\0";
+            socCl.getOutputStream().write(mess.getBytes());
+
+            byte buf[] = new byte[64 * 1024];
+            int r = socCl.getInputStream().read(buf);
+            String data = new String(buf, 0, r);
+
+            System.out.println(data);
+
+            socCl.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }
 }
