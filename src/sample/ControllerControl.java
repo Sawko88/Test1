@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -22,6 +23,8 @@ public class ControllerControl implements Initializable {
 
 
     public AnchorPane ap1;
+    public Label labCL;
+    int count = 0;
 
     public void conBack(ActionEvent actionEvent) throws IOException {
         //закрываем текущую форму
@@ -71,9 +74,9 @@ public class ControllerControl implements Initializable {
             byte buf[] = new byte[64 * 1024];
             int r = socCl.getInputStream().read(buf);
             String data = new String(buf, 0, r);
-
-            System.out.println(data);
-
+            labCL.setText(data+count);
+            System.out.println(data+count);
+            count++;
             socCl.close();
         }
         catch (Exception e)
