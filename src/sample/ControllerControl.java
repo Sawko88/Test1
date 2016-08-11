@@ -68,7 +68,7 @@ public class ControllerControl implements Initializable {
             Socket socCl = new Socket("84.204.102.210", 6009);
             System.out.println("Socket conect");
 
-            String mess = "imei=79811050470&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614\0";
+            String mess = "imei=79811050470&rmc=CODE 0B A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614\0";
             socCl.getOutputStream().write(mess.getBytes());
 
             byte buf[] = new byte[64 * 1024];
