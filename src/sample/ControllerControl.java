@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,40 +29,24 @@ public class ControllerControl implements Initializable {
 
 
 
-    public Label labCL;
-    public Button btnConCL;
-    public TextField tfIpCl;
-    public TextField tfPortCl;
-    public Button btnBackCl;
-    public TabPane tpParCl;
-    public CheckBox cbTimeCl;
-    public Button btnSendCl;
-    public TextField tfTimeCl;
-    int count = 0;
-    int flagConCl = 0;
-    boolean flagTimeCl = true;
-    String MessCl = "";
-
+    
+    public TextField TelefonControl;
+    public TextField PortControl;
+    public TextField IpControl;
+    public TextField MessControl;
+    public TextField TimeControl;
+    public Button OkControl;
+    public Button CanselControl;
+    public AnchorPane ApHomeControl;
+    public CheckBox DefaultCheckControl;
+    private String DefaultMess = "CODE 0C A00000000000000000000000000000000000000000000000000000000";
+    private String mess;
+    private String time;
+    private String IpAddr;
+    private String PortAddr;
+    private String Telefon;
 
     public void conBack(ActionEvent actionEvent) throws IOException {
-        //закрываем текущую форму
-        Node source = (Node)  actionEvent.getSource();
-        Stage stage  = (Stage) source.getScene().getWindow();
-        stage.close();
-        System.out.println("close Control");
-
-        // запускаем следующую форму
-        Parent home_page_parent = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        Scene home_page_scene = new Scene(home_page_parent);
-        Stage app_stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        app_stage.setScene(home_page_scene);
-        app_stage.setMaxWidth(300);
-        app_stage.setMaxHeight(200);
-        app_stage.setMinWidth(300);
-        app_stage.setMinHeight(200);
-        app_stage.show();
-        System.out.println("load Controller");
-        
 
     }
 
@@ -72,80 +58,95 @@ public class ControllerControl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("third");
-        tpParCl.setDisable(true);
+
+        IpControl.textProperty().addListener(new MaxLeingthTextFiekd(IpControl,15));
+        PortControl.textProperty().addListener(new MaxLeingthTextFiekd(PortControl,5));
+        TelefonControl.textProperty().addListener(new MaxLeingthTextFiekd(TelefonControl,11));
+        TimeControl.textProperty().addListener(new MaxLeingthTextFiekd(TimeControl,3));
+        MessControl.textProperty().addListener(new MaxLeingthTextFiekd(MessControl,90));
+
 
     }
 
 
-    public void conSerCl(ActionEvent actionEvent) {
-        try {
-            if (flagConCl == 0){
-                //ap1.setVisible(true);
-                tpParCl.setDisable(false);
-                btnConCL.setText("Отключиться");
-                tfIpCl.setDisable(true);
-                tfPortCl.setDisable(true);
-                btnBackCl.setDisable(true);
-                flagConCl = 1;
-            }
-            else {
-                //ap1.setVisible(false);
-                tpParCl.setDisable(true);
-                btnConCL.setText("Подключиться");
-                tfIpCl.setDisable(false);
-                tfPortCl.setDisable(false);
-                btnBackCl.setDisable(false);
-                flagConCl = 0;
-            }
+    public void ClickOk(ActionEvent actionEvent) {
+        GenerMess();
+        setTime(TimeControl.getText());
+        setIpAddr(IpControl.getText());
+        setPortAddr(PortControl.getText());
+        setTelefon(TelefonControl.getText());
+        System.out.println("mess= "+getMess()
+        +" | time= "+getTime()+"min"
+        + "| ip = "+ getIpAddr()
+        +" | port= "+ getPortAddr()
+        +" | telefon= "+getTelefon());
+        Stage stage = (Stage) OkControl.getScene().getWindow();
+        stage.close();
+    }
 
-            //Socket socCl = new Socket(ipAdrCl.getText(), Integer.parseInt(portCl.getText().toString()));
-            //Socket socCl = new Socket("84.204.102.210", 6009);
-           // System.out.println("Socket conect");
-
-            /*String mess = "imei=79811050470&rmc=CODE 0B A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614\0";
-            socCl.getOutputStream().write(mess.getBytes());
-
-            byte buf[] = new byte[64 * 1024];
-            int r = socCl.getInputStream().read(buf);
-            String data = new String(buf, 0, r);
-            labCL.setText(data+count);
-            System.out.println(data+count);
-            count++;
-            socCl.close();*/
+    private void GenerMess() {
+        if (DefaultCheckControl.isSelected()){
+            mess = "imei="+TelefonControl.getText() + "&rms="+DefaultMess +"\0";
         }
-        catch (Exception e)
+        else {
+            mess = "imei="+TelefonControl.getText() + "&rms="+MessControl.getText() +"\0";
+        }
+        //System.out.println(mess);
+    }
+
+    public void ClickCansel(ActionEvent actionEvent) {
+        Stage stage = (Stage) CanselControl.getScene().getWindow();
+        stage.close();
+    }
+
+    public void ClickDefault(ActionEvent actionEvent) {
+        if(DefaultCheckControl.isSelected())
         {
-            System.out.println(e);
+            MessControl.setDisable(true);
+        }
+        else
+        {
+            MessControl.setDisable(false);
         }
     }
 
-    public void cbTimeSelect(ActionEvent actionEvent) {
-        if (cbTimeCl.isSelected()){
-            tfTimeCl.setDisable(true);
-
-            flagTimeCl = true;
-        }
-        else {
-            tfTimeCl.setDisable(false);
-
-            flagTimeCl = false;
-        }
+    public double getTime() {
+        return Double.parseDouble(time);
     }
 
-    public void SendMesCl(ActionEvent actionEvent) throws ParseException {
-        String timeCL = "";
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("HHmmss.SSS");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        if ( flagTimeCl) {
+    public void setTime(String time) {
+        this.time = time;
+    }
 
-            timeCL = sdf.format(date);
-            System.out.println(timeCL);
-        }
-        else {
-            timeCL = tfTimeCl.getText();
-            System.out.println( sdf.parse(timeCL));
-            System.out.println(timeCL);
-        }
+    public String getMess() {
+        return mess;
+    }
+
+    public void setMess(String mess) {
+        this.mess = mess;
+    }
+
+    public String getIpAddr() {
+        return IpAddr;
+    }
+
+    public void setIpAddr(String ipAddr) {
+        IpAddr = ipAddr;
+    }
+
+    public String getPortAddr() {
+        return PortAddr;
+    }
+
+    public void setPortAddr(String portAddr) {
+        PortAddr = portAddr;
+    }
+
+    public String getTelefon() {
+        return Telefon;
+    }
+
+    public void setTelefon(String telefon) {
+        Telefon = telefon;
     }
 }
