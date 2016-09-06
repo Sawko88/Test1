@@ -29,22 +29,119 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.invoke.MethodHandles;
 import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
+
 
 public class Controller implements Initializable {
 
     public ToggleButton ControlBut;
     public AnchorPane home;
     ControllerControl Control1;
-    public String ControlMess = "";
+    public String ControlMess;
     public double ControlTime = 1.0;
     public String ControlIp;
     public String ControlPort;
+    public Timeline TimelineControl;
+
+    private final static Logger LOGGER
+            = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
+
+    private ObservableList<String> rcvdMsgsData;
+    private ObservableList<String> sentMsgsData;
+    private ListView lastSelectedListView;
+
+    private boolean connected;
+    private volatile boolean isAutoConnected;
+
+    private static final int DEFAULT_RETRY_INTERVAL = 2000; // in milliseconds
+    private String ControlTelefon;
+    private String ControlMessToServer;
+
+    public enum ConnectionDisplayState {
+
+        DISCONNECTED, ATTEMPTING, CONNECTED, AUTOCONNECTED, AUTOATTEMPTING
+    }
+
+    private FxSocketClient socket;
+
+    private synchronized void waitForDisconnect() {
+        while (connected) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    private synchronized void notifyDisconnected() {
+        connected = false;
+        notifyAll();
+    }
+
+    private synchronized void setIsConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    private synchronized boolean isConnected() {
+        return (connected);
+    }
+
+    private void connect() {
+        socket = new FxSocketClient(new FxSocketListener(),
+                ControlIp,
+                Integer.valueOf(ControlPort),
+                Constants.instance().DEBUG_ALL);
+        socket.connect();
+    }
+
+    private void autoConnect() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (isAutoConnected) {
+                    if (!isConnected()) {
+                        socket = new FxSocketClient(new FxSocketListener(),
+                                ControlIp,
+                                Integer.valueOf(ControlPort),
+                                Constants.instance().DEBUG_NONE);
+                        socket.connect();
+                    }
+                    waitForDisconnect();
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ex) {
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private void displayState(ConnectionDisplayState state) {
+        switch (state) {
+            case DISCONNECTED:
+
+                break;
+            case ATTEMPTING:
+            case AUTOATTEMPTING:
+
+                break;
+            case CONNECTED:
+
+                break;
+            case AUTOCONNECTED:
+
+                break;
+        }
+    }
+
 
 
     public void Connect(ActionEvent actionEvent) throws IOException {
@@ -63,61 +160,142 @@ public class Controller implements Initializable {
         ControlTime = Control1.getTime();
         ControlIp = Control1.getIpAddr();
         ControlPort = Control1.getPortAddr();
+        ControlTelefon = Control1.getTelefon();
         System.out.println(ControlMess);
+        connect();
 
     }
 
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("start Controller");
-
-        //TimelineControl.setCycleCount(Timeline.INDEFINITE);
-    }
 
     private void ControlSendMess() throws IOException {
         System.out.println(ControlMess);
-        /*try {
 
 
-
-            Socket socket = new Socket(ControlIp, Integer.parseInt(ControlPort));
-            PrintStream out = new PrintStream(socket.getOutputStream());
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out.println(ControlMess);
-            out.println();
-
-            String line = in.readLine();
-            while (line != null) {
-                System.out.println(line);
-                line = in.readLine();
-            }
-            in.close();
-            out.close();
-            socket.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }*/
     }
 
     public void ControlStart(ActionEvent actionEvent) {
-        Timeline TimelineControl = new Timeline(new KeyFrame(Duration.seconds(ControlTime), ae -> {
-            try {
-                ControlSendMess();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }));
-        TimelineControl.setCycleCount(Animation.INDEFINITE);
+
         if (ControlBut.isSelected()){
+
             System.out.println("StartControl");
-            TimelineControl.play();
+            String mess = "imei=79816902221&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614";
+            ControlMessToServer = "imei="+ControlTelefon+"&rmc="+ControlMess;
+            socket.sendMessage(ControlMessToServer);
+            sentMsgsData.add(ControlMessToServer);
+
+            /*TimelineControl = new Timeline(new KeyFrame(Duration.seconds(ControlTime), ae -> {
+                try {
+                    ControlSendMess();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }));
+            TimelineControl.setCycleCount(Animation.INDEFINITE);
+            TimelineControl.play();*/
         }
         else {
             System.out.println("StopControl");
-            TimelineControl.stop();
+            /*TimelineControl.stop();*/
+            socket.shutdown();
         }
     }
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        setIsConnected(false);
+        isAutoConnected = false;
+        displayState(ConnectionDisplayState.DISCONNECTED);
+
+        sentMsgsData = FXCollections.observableArrayList();
+
+        rcvdMsgsData = FXCollections.observableArrayList();
+
+
+        Runtime.getRuntime().addShutdownHook(new ShutDownThread());
+    }
+
+    class ShutDownThread extends Thread {
+
+        @Override
+        public void run() {
+            if (socket != null) {
+                if (socket.debugFlagIsSet(Constants.instance().DEBUG_STATUS)) {
+                    LOGGER.info("ShutdownHook: Shutting down Server Socket");
+                }
+                socket.shutdown();
+            }
+        }
+    }
+
+    class FxSocketListener implements SocketListener {
+
+        @Override
+        public void onMessage(String line) {
+            if (line != null && !line.equals("")) {
+                rcvdMsgsData.add(line);
+            }
+        }
+
+        @Override
+        public void onClosedStatus(boolean isClosed) {
+            if (isClosed) {
+                notifyDisconnected();
+                if (isAutoConnected) {
+                    displayState(ConnectionDisplayState.AUTOATTEMPTING);
+                } else {
+                    displayState(ConnectionDisplayState.DISCONNECTED);
+                }
+            } else {
+                setIsConnected(true);
+                if (isAutoConnected) {
+                    displayState(ConnectionDisplayState.AUTOCONNECTED);
+                } else {
+                    displayState(ConnectionDisplayState.CONNECTED);
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void handleClearRcvdMsgsButton(ActionEvent event) {
+        rcvdMsgsData.clear();
+
+    }
+
+    @FXML
+    private void handleClearSentMsgsButton(ActionEvent event) {
+        sentMsgsData.clear();
+
+    }
+
+    @FXML
+    private void handleSendMessageButton(ActionEvent event) {
+
+            socket.sendMessage(ControlMess);
+            sentMsgsData.add(ControlMess);
+
+    }
+
+    @FXML
+    private void handleConnectButton(ActionEvent event) {
+        displayState(ConnectionDisplayState.ATTEMPTING);
+        connect();
+    }
+
+    @FXML
+    private void handleDisconnectButton(ActionEvent event) {
+        socket.shutdown();
+    }
+
+    @FXML
+    private void handleAutoConnectCheckBox(ActionEvent event) {
+
+    }
+
+    @FXML
+    private void handleRetryIntervalTextField(ActionEvent event) {
+
+    }
+
+
 }

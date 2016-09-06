@@ -86,10 +86,12 @@ public class ControllerControl implements Initializable {
 
     private void GenerMess() {
         if (DefaultCheckControl.isSelected()){
-            mess = "imei="+TelefonControl.getText() + "&rms="+DefaultMess +"\0";
+            //mess = "imei="+TelefonControl.getText() + "&rms="+DefaultMess;
+            mess = DefaultMess;
         }
         else {
-            mess = "imei="+TelefonControl.getText() + "&rms="+MessControl.getText() +"\0";
+            //mess = "imei="+TelefonControl.getText() + "&rms="+MessControl.getText();
+            mess = MessControl.getText();
         }
         //System.out.println(mess);
     }
