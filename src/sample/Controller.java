@@ -156,50 +156,41 @@ public class Controller implements Initializable {
         Scene scene = new Scene(page);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
+
         ControlMess = Control1.getMess();
         ControlTime = Control1.getTime();
         ControlIp = Control1.getIpAddr();
         ControlPort = Control1.getPortAddr();
         ControlTelefon = Control1.getTelefon();
         System.out.println(ControlMess);
+        ControlMessToServer = "imei="+ControlTelefon+"&rmc="+ControlMess;
         connect();
-
     }
 
-
-
-    private void ControlSendMess() throws IOException {
-        System.out.println(ControlMess);
-
-
-    }
 
     public void ControlStart(ActionEvent actionEvent) {
 
         if (ControlBut.isSelected()){
 
             System.out.println("StartControl");
-            String mess = "imei=79816902221&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614";
-            ControlMessToServer = "imei="+ControlTelefon+"&rmc="+ControlMess;
-            socket.sendMessage(ControlMessToServer);
-            sentMsgsData.add(ControlMessToServer);
 
-            /*TimelineControl = new Timeline(new KeyFrame(Duration.seconds(ControlTime), ae -> {
-                try {
-                    ControlSendMess();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            TimelineControl = new Timeline(new KeyFrame(Duration.minutes(ControlTime), ae -> {
+                ControlSendMess();
             }));
             TimelineControl.setCycleCount(Animation.INDEFINITE);
-            TimelineControl.play();*/
+            TimelineControl.play();
         }
         else {
             System.out.println("StopControl");
-            /*TimelineControl.stop();*/
+            TimelineControl.stop();
             socket.shutdown();
         }
     }
+
+    private void ControlSendMess() {
+        socket.sendMessage(ControlMessToServer);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setIsConnected(false);
@@ -212,6 +203,7 @@ public class Controller implements Initializable {
 
 
         Runtime.getRuntime().addShutdownHook(new ShutDownThread());
+
     }
 
     class ShutDownThread extends Thread {

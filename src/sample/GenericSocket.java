@@ -208,21 +208,14 @@ public abstract class GenericSocket implements SocketListener {
      */
     public void sendMessage(String msg) {
         try {
-            //msg = msg+"\0";
-            /*output.write(msg, 0, msg.length());
-            output.newLine();
-            output.flush();*/
-            String mess = "imei=79816902221&rmc=CODE 0B A00000000000000000000000000000000000000000000000000000000";
 
-            //String mess = "imei=79816902221&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614";
-            mess = mess + "\0";
 
             msg = msg+"\0";
             output.write(msg, 0, msg.length());
-            output.newLine();
-            output.flush();
+            //output.newLine();
+            //output.flush();
 
-            //socketConnection.getOutputStream().write(msg.getBytes());
+            socketConnection.getOutputStream().write(msg.getBytes());
             if (debugFlagIsSet(Constants.instance().DEBUG_SEND)) {
                 String logMsg = "send> " + msg;
                 LOGGER.info(logMsg);
@@ -289,8 +282,10 @@ public abstract class GenericSocket implements SocketListener {
              */
             try {
                 if (input != null) {
-                    String line;
-                    while ((line = input.readLine()) != null) {
+                    while (true) {//(line = input.readLine()) != null
+                        byte buf[] = new byte[64 * 1];
+                        int r = socketConnection.getInputStream().read(buf);
+                        String line = new String(buf, 0, r);
                         if (debugFlagIsSet(Constants.instance().DEBUG_RECV)) {
                             String logMsg = "recv> " + line;
                             LOGGER.info(logMsg);
