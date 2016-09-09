@@ -1,26 +1,14 @@
 package sample;
 
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.TimeZone;
+
 
 /**
  * Created by shestakov.aa on 21.07.2016.
@@ -28,8 +16,6 @@ import java.util.TimeZone;
 public class ControllerControl implements Initializable {
 
 
-
-    
     public TextField TelefonControl;
     public TextField PortControl;
     public TextField IpControl;
@@ -45,6 +31,8 @@ public class ControllerControl implements Initializable {
     private String IpAddr;
     private String PortAddr;
     private String Telefon;
+    private boolean okClick = false;
+    private boolean flagDefaultMess;
 
     public void conBack(ActionEvent actionEvent) throws IOException {
 
@@ -58,13 +46,13 @@ public class ControllerControl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("third");
+        okClick = false;
 
-        IpControl.textProperty().addListener(new MaxLeingthTextFiekd(IpControl,15));
-        PortControl.textProperty().addListener(new MaxLeingthTextFiekd(PortControl,5));
-        TelefonControl.textProperty().addListener(new MaxLeingthTextFiekd(TelefonControl,11));
-        TimeControl.textProperty().addListener(new MaxLeingthTextFiekd(TimeControl,3));
-        MessControl.textProperty().addListener(new MaxLeingthTextFiekd(MessControl,90));
-
+        IpControl.textProperty().addListener(new MaxLeingthTextFiekd(IpControl, 15));
+        PortControl.textProperty().addListener(new MaxLeingthTextFiekd(PortControl, 5));
+        TelefonControl.textProperty().addListener(new MaxLeingthTextFiekd(TelefonControl, 11));
+        TimeControl.textProperty().addListener(new MaxLeingthTextFiekd(TimeControl, 3));
+        MessControl.textProperty().addListener(new MaxLeingthTextFiekd(MessControl, 90));
 
     }
 
@@ -75,39 +63,39 @@ public class ControllerControl implements Initializable {
         setIpAddr(IpControl.getText());
         setPortAddr(PortControl.getText());
         setTelefon(TelefonControl.getText());
-        System.out.println("mess= "+getMess()
-        +" | time= "+getTime()+"min"
-        + "| ip = "+ getIpAddr()
-        +" | port= "+ getPortAddr()
-        +" | telefon= "+getTelefon());
+        System.out.println("mess= " + getMess()
+                + " | time= " + getTime() + "min"
+                + "| ip = " + getIpAddr()
+                + " | port= " + getPortAddr()
+                + " | telefon= " + getTelefon());
+        okClick = true;
         Stage stage = (Stage) OkControl.getScene().getWindow();
         stage.close();
     }
 
     private void GenerMess() {
-        if (DefaultCheckControl.isSelected()){
+        if (DefaultCheckControl.isSelected()) {
+            flagDefaultMess = true;
             //mess = "imei="+TelefonControl.getText() + "&rms="+DefaultMess;
             mess = DefaultMess;
-        }
-        else {
+        } else {
             //mess = "imei="+TelefonControl.getText() + "&rms="+MessControl.getText();
+            flagDefaultMess = false;
             mess = MessControl.getText();
         }
         //System.out.println(mess);
     }
 
-    public void ClickCansel(ActionEvent actionEvent) {
+    public void ClickCansel(ActionEvent actionEvent)  {
+        okClick = false;
         Stage stage = (Stage) CanselControl.getScene().getWindow();
         stage.close();
     }
 
     public void ClickDefault(ActionEvent actionEvent) {
-        if(DefaultCheckControl.isSelected())
-        {
+        if (DefaultCheckControl.isSelected()) {
             MessControl.setDisable(true);
-        }
-        else
-        {
+        } else {
             MessControl.setDisable(false);
         }
     }
@@ -150,5 +138,35 @@ public class ControllerControl implements Initializable {
 
     public void setTelefon(String telefon) {
         Telefon = telefon;
+    }
+
+    public boolean isOkClick() {
+        return okClick;
+    }
+
+    public void setOkClick(boolean okClick) {
+        this.okClick = okClick;
+    }
+
+
+    public void setFormControl(String controlPort, String controlMess, String controlTelefon, String controlIp, boolean controlFlagMess, double controlTime) {
+        PortControl.setText(controlPort);
+        IpControl.setText(controlIp);
+        mess = controlMess;
+        TelefonControl.setText(controlTelefon);
+        TimeControl.setText(String.valueOf(controlTime));
+        DefaultCheckControl.setSelected(controlFlagMess);
+        MessControl.setDisable(controlFlagMess);
+        if(!controlFlagMess){
+            MessControl.setText(controlMess);
+        }
+    }
+
+    public boolean isFlagDefaultMess() {
+        return flagDefaultMess;
+    }
+
+    public void setFlagDefaultMess(boolean flagDefaultMess) {
+        this.flagDefaultMess = flagDefaultMess;
     }
 }

@@ -17,21 +17,20 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="home" blendMode="DARKEN" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="314.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane fx:id="home" blendMode="DARKEN" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="452.0" prefWidth="788.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Label layoutX="261.0" layoutY="42.0" text="Тестирование ПЦН">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <ListView layoutX="38.0" layoutY="89.0" prefHeight="183.0" prefWidth="606.0" />
-      <Label alignment="CENTER" layoutX="495.0" layoutY="105.0" prefHeight="25.0" prefWidth="89.0" text="Статус" />
-      <Label alignment="CENTER" layoutX="369.0" layoutY="88.0" prefHeight="42.0" prefWidth="130.0" text="Время последнего сообщения" textAlignment="CENTER" wrapText="true" />
-      <Label alignment="CENTER" layoutX="279.0" layoutY="88.0" prefHeight="42.0" prefWidth="89.0" text="Кол-во сообщений" textAlignment="CENTER" wrapText="true" />
-      <Label alignment="CENTER" layoutX="203.0" layoutY="105.0" prefHeight="25.0" prefWidth="75.0" text="Интервал" />
+      <ListView layoutX="38.0" layoutY="86.0" prefHeight="186.0" prefWidth="730.0" />
+      <Label alignment="CENTER" layoutX="569.0" layoutY="105.0" prefHeight="25.0" prefWidth="137.0" text="Статус" />
+      <Label alignment="CENTER" layoutX="432.0" layoutY="88.0" prefHeight="42.0" prefWidth="130.0" text="Время последнего сообщения" textAlignment="CENTER" wrapText="true" />
+      <Label alignment="CENTER" layoutX="357.0" layoutY="105.0" prefHeight="25.0" prefWidth="75.0" text="Интервал" />
       <Label alignment="CENTER" layoutX="109.0" layoutY="105.0" prefHeight="25.0" prefWidth="89.0" text="Комплект" />
       <Label alignment="CENTER" layoutX="50.0" layoutY="105.0" prefHeight="25.0" prefWidth="59.0" text="ON/OFF" />
-      <GridPane gridLinesVisible="true" layoutX="50.0" layoutY="130.0" prefHeight="121.0" prefWidth="580.0">
+      <GridPane gridLinesVisible="true" layoutX="50.0" layoutY="130.0" prefHeight="121.0" prefWidth="706.0">
          <children>
             <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="63.0" prefWidth="580.0" GridPane.rowIndex="1">
                <items>
@@ -50,20 +49,20 @@
                   <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="31.0" text="Button" />
                </items>
             </ToolBar>
-            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="42.0" prefWidth="579.0">
+            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="706.0">
                <items>
                   <ToggleButton fx:id="ControlBut" mnemonicParsing="false" onAction="#ControlStart" prefHeight="25.0" prefWidth="49.0" text="ToggleButton" />
                   <Separator orientation="VERTICAL" prefHeight="16.0" prefWidth="9.0" />
                   <Label alignment="CENTER" prefHeight="17.0" prefWidth="75.0" text="Control" />
                   <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="65.0" text="60 мин" />
+                  <Label fx:id="LbControlServer" alignment="CENTER" prefHeight="17.0" prefWidth="144.0" text="--" wrapText="true" />
+                  <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
+                  <Label fx:id="lbControlTime" alignment="CENTER" prefHeight="17.0" prefWidth="65.0" text="--" />
                   <Separator orientation="VERTICAL" prefHeight="18.0" prefWidth="0.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="77.0" text="12345" />
-                  <Separator layoutX="169.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="32.0" prefWidth="115.0" text="12:00:00 04.05.2016" />
+                  <Label fx:id="lbControlLastSend" alignment="CENTER" prefHeight="32.0" prefWidth="115.0" text="--" />
                   <Separator layoutX="339.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="Label" />
-                  <Separator layoutX="381.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
+                  <Label fx:id="lbControlState" alignment="CENTER" prefHeight="17.0" prefWidth="123.0" text="--" />
+                  <Separator layoutX="381.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="4.0" />
                   <Button id="btnConnect" mnemonicParsing="false" onAction="#Connect" prefHeight="25.0" prefWidth="31.0" text="Открыть" textAlignment="CENTER" />
                </items>
             </ToolBar>
@@ -89,10 +88,13 @@
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="54.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
+      <Label alignment="CENTER" layoutX="205.0" layoutY="109.0" prefHeight="17.0" prefWidth="153.0" text="Адрес сервера" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="704.0" layoutY="109.0" prefHeight="17.0" prefWidth="64.0" text="Настройки" />
+      <TextArea fx:id="taErrorMess" editable="false" layoutX="38.0" layoutY="285.0" prefHeight="153.0" prefWidth="730.0" wrapText="true" />
    </children>
 </AnchorPane>
