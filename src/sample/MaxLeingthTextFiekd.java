@@ -28,7 +28,6 @@ public class MaxLeingthTextFiekd implements javafx.beans.value.ChangeListener<St
             return;
         }
 
-
         if (newValue.length() > maxLength) {
             textField.setText(oldValue);
         } else {

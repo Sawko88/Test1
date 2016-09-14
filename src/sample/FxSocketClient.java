@@ -96,6 +96,8 @@ public class FxSocketClient extends GenericSocket
                 System.out.println("Connected to " + host
                         + "at port " + port);
             }
+        } catch (ConnectException e){
+            System.out.println("ConnectionExeption" + e);
         } catch (IOException e) {
             if (debugFlagIsSet(Constants.instance().DEBUG_EXCEPTIONS)) {
                 e.printStackTrace();

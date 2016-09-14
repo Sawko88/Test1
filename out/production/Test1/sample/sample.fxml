@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -17,16 +19,16 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="home" blendMode="DARKEN" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="452.0" prefWidth="788.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane fx:id="home" blendMode="DARKEN" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="788.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <Label layoutX="261.0" layoutY="42.0" text="Тестирование ПЦН">
+      <Label layoutX="324.0" layoutY="25.0" text="Тестирование ПЦН">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <ListView layoutX="38.0" layoutY="86.0" prefHeight="186.0" prefWidth="730.0" />
+      <ListView layoutX="38.0" layoutY="67.0" prefHeight="205.0" prefWidth="730.0" />
       <Label alignment="CENTER" layoutX="569.0" layoutY="105.0" prefHeight="25.0" prefWidth="137.0" text="Статус" />
-      <Label alignment="CENTER" layoutX="432.0" layoutY="88.0" prefHeight="42.0" prefWidth="130.0" text="Время последнего сообщения" textAlignment="CENTER" wrapText="true" />
+      <Label alignment="CENTER" layoutX="435.0" layoutY="77.0" prefHeight="53.0" prefWidth="134.0" text="Время последнего отправленного  сообщения" textAlignment="CENTER" wrapText="true" />
       <Label alignment="CENTER" layoutX="357.0" layoutY="105.0" prefHeight="25.0" prefWidth="75.0" text="Интервал" />
       <Label alignment="CENTER" layoutX="109.0" layoutY="105.0" prefHeight="25.0" prefWidth="89.0" text="Комплект" />
       <Label alignment="CENTER" layoutX="50.0" layoutY="105.0" prefHeight="25.0" prefWidth="59.0" text="ON/OFF" />
@@ -51,7 +53,7 @@
             </ToolBar>
             <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="706.0">
                <items>
-                  <ToggleButton fx:id="ControlBut" mnemonicParsing="false" onAction="#ControlStart" prefHeight="25.0" prefWidth="49.0" text="ToggleButton" />
+                  <ToggleButton fx:id="ControlBut" mnemonicParsing="false" onAction="#ControlStart" prefHeight="25.0" prefWidth="49.0" text="ON" />
                   <Separator orientation="VERTICAL" prefHeight="16.0" prefWidth="9.0" />
                   <Label alignment="CENTER" prefHeight="17.0" prefWidth="75.0" text="Control" />
                   <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
@@ -95,6 +97,8 @@
       </GridPane>
       <Label alignment="CENTER" layoutX="205.0" layoutY="109.0" prefHeight="17.0" prefWidth="153.0" text="Адрес сервера" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="704.0" layoutY="109.0" prefHeight="17.0" prefWidth="64.0" text="Настройки" />
-      <TextArea fx:id="taErrorMess" editable="false" layoutX="38.0" layoutY="285.0" prefHeight="153.0" prefWidth="730.0" wrapText="true" />
+      <TextArea fx:id="taErrorMess" editable="false" layoutX="38.0" layoutY="307.0" prefHeight="131.0" prefWidth="654.0" wrapText="true" />
+      <Label layoutX="50.0" layoutY="290.0" text="Сообщения об ошибках" />
+      <Button fx:id="btCkearLog" layoutX="698.0" layoutY="307.0" mnemonicParsing="false" onAction="#ClearLogChat" prefHeight="131.0" prefWidth="72.0" text="Clear" />
    </children>
 </AnchorPane>

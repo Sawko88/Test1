@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
 
 /**
@@ -34,6 +35,44 @@ public class ControllerControl implements Initializable {
     private boolean okClick = false;
     private boolean flagDefaultMess;
 
+    UnaryOperator<TextFormatter.Change> filter = new UnaryOperator<TextFormatter.Change>() {
+
+
+        @Override
+        public TextFormatter.Change apply(TextFormatter.Change t) {
+
+
+
+            if (t.isContentChange()){
+                if (t.getText().matches("[^0-9]")){
+                    t.setText("");
+                }
+
+            }
+
+            return t;
+        }
+    };
+
+    UnaryOperator<TextFormatter.Change> filterIp = new UnaryOperator<TextFormatter.Change>() {
+
+
+        @Override
+        public TextFormatter.Change apply(TextFormatter.Change t) {
+
+
+
+            if (t.isContentChange()){
+                if (t.getText().matches("[^0-9.]")){
+                    t.setText("");
+                }
+
+            }
+
+            return t;
+        }
+    };
+
     public void conBack(ActionEvent actionEvent) throws IOException {
 
     }
@@ -54,7 +93,17 @@ public class ControllerControl implements Initializable {
         TimeControl.textProperty().addListener(new MaxLeingthTextFiekd(TimeControl, 3));
         MessControl.textProperty().addListener(new MaxLeingthTextFiekd(MessControl, 90));
 
+
+
+        PortControl.setTextFormatter(new TextFormatter<Object>(filter));
+        TelefonControl.setTextFormatter(new TextFormatter<Object>(filter));
+
+        TimeControl.setTextFormatter(new TextFormatter<Object>(filter));
+        IpControl.setTextFormatter(new TextFormatter<Object>(filterIp));
+
     }
+
+
 
 
     public void ClickOk(ActionEvent actionEvent) {
@@ -101,7 +150,13 @@ public class ControllerControl implements Initializable {
     }
 
     public double getTime() {
-        return Double.parseDouble(time);
+        if (Double.parseDouble(time) == 0.0)
+        {
+            return 1.0;
+        }
+        else {
+            return Double.parseDouble(time);
+        }
     }
 
     public void setTime(String time) {
@@ -154,7 +209,8 @@ public class ControllerControl implements Initializable {
         IpControl.setText(controlIp);
         mess = controlMess;
         TelefonControl.setText(controlTelefon);
-        TimeControl.setText(String.valueOf(controlTime));
+
+        TimeControl.setText(String.valueOf((int) controlTime));
         DefaultCheckControl.setSelected(controlFlagMess);
         MessControl.setDisable(controlFlagMess);
         if(!controlFlagMess){

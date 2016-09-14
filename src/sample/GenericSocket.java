@@ -208,13 +208,11 @@ public abstract class GenericSocket implements SocketListener {
      */
     public void sendMessage(String msg) {
         try {
-
-
             msg = msg+"\0";
-            output.write(msg, 0, msg.length());
+            //output.write(msg, 0, msg.length());
             //output.newLine();
             //output.flush();
-
+            //String mess = "imei=79811050470&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614\0";
             socketConnection.getOutputStream().write(msg.getBytes());
             if (debugFlagIsSet(Constants.instance().DEBUG_SEND)) {
                 String logMsg = "send> " + msg;
