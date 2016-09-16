@@ -26,6 +26,7 @@ public class ControllerControl implements Initializable {
     public Button CanselControl;
     public AnchorPane ApHomeControl;
     public CheckBox DefaultCheckControl;
+
     private String DefaultMess = "CODE 0C A00000000000000000000000000000000000000000000000000000000";
     private String mess;
     private String time;
@@ -205,16 +206,16 @@ public class ControllerControl implements Initializable {
 
 
     public void setFormControl(String controlPort, String controlMess, String controlTelefon, String controlIp, boolean controlFlagMess, double controlTime) {
-        PortControl.setText(controlPort);
-        IpControl.setText(controlIp);
-        mess = controlMess;
-        TelefonControl.setText(controlTelefon);
+        this.PortControl.setText(controlPort);
+        this.IpControl.setText(controlIp);
+        this.mess = controlMess;
+        this.TelefonControl.setText(controlTelefon);
 
-        TimeControl.setText(String.valueOf((int) controlTime));
-        DefaultCheckControl.setSelected(controlFlagMess);
-        MessControl.setDisable(controlFlagMess);
+        this.TimeControl.setText(String.valueOf((int) controlTime));
+        this.DefaultCheckControl.setSelected(controlFlagMess);
+        this.MessControl.setDisable(controlFlagMess);
         if(!controlFlagMess){
-            MessControl.setText(controlMess);
+            this.MessControl.setText(controlMess);
         }
     }
 

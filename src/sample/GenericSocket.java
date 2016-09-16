@@ -31,9 +31,11 @@
 
 package sample;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.lang.invoke.MethodHandles;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 public abstract class GenericSocket implements SocketListener {
@@ -205,15 +207,33 @@ public abstract class GenericSocket implements SocketListener {
      * automatically be appended to the message.
      *
      * @param msg The String message to send
+     * @param complect
      */
-    public void sendMessage(String msg) {
+    public void sendMessage(String msg, MySocketClient.ComplectType complect) {
         try {
-            msg = msg+"\0";
+            switch (complect){
+                case CONTROL:
+                    msg = msg+"\0";
+                    socketConnection.getOutputStream().write(msg.getBytes());
+                    break;
+
+                case SATELLIT:
+                    byte[] b = new byte[80];
+                    b = DatatypeConverter.parseHexBinary(msg);
+                    socketConnection.getOutputStream().write(DatatypeConverter.parseHexBinary(msg));
+                    break;
+                case MAGICK:
+                    break;
+            }
+
             //output.write(msg, 0, msg.length());
             //output.newLine();
             //output.flush();
-            //String mess = "imei=79811050470&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614\0";
-            socketConnection.getOutputStream().write(msg.getBytes());
+            //byte[] b1 = new byte[] {AC5002088405000000000000000000032B373931313739323531363900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000};
+            //msg = "AC5002088405000000000000000000032B373931313739323531363900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+            //String msgS = "imei=79816902221&rmc=CODE 0C A053847.000,A,5955.9634,N,03017.8931,E,0.00,166.49,230614\0";
+            //byte[] b = msg.getBytes("UTF-8");
+
             if (debugFlagIsSet(Constants.instance().DEBUG_SEND)) {
                 String logMsg = "send> " + msg;
                 LOGGER.info(logMsg);
@@ -279,10 +299,11 @@ public abstract class GenericSocket implements SocketListener {
              * Read from from input stream one line at a time
              */
             try {
-                if (input != null) {
+
                     while (true) {//(line = input.readLine()) != null
                         byte buf[] = new byte[64 * 1];
                         int r = socketConnection.getInputStream().read(buf);
+                        System.out.println("out = "+ DatatypeConverter.printHexBinary(buf));
                         String line = new String(buf, 0, r);
                         if (debugFlagIsSet(Constants.instance().DEBUG_RECV)) {
                             String logMsg = "recv> " + line;
@@ -295,7 +316,7 @@ public abstract class GenericSocket implements SocketListener {
                          * on the main thread.
                          */
                         onMessage(line);
-                    }
+
                 }
             } catch (IOException e) {
                 if (debugFlagIsSet(Constants.instance().DEBUG_EXCEPTIONS)) {

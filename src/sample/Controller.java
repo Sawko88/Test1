@@ -38,12 +38,28 @@ public class Controller implements Initializable {
     public Label lbControlState;
     public Label lbControlLastSend;
     public TextArea taErrorMess;
+    public ToggleButton SatellitBut;
+    public Label lbSatellitServer;
+    public Label lbSatellitTime;
+    public Label lbSatellitLastSend;
+    public Label lbSatellitState;
     ControllerControl Control1;
+    SatellitControler Satellit1;
+
     public String ControlMess="";
     public double ControlTime = 1.0;
     public String ControlIp="192.168.51.71";
     public String ControlPort = "6009";
     public boolean ControlFlagMess= true;
+    private String ControlTelefon = "79816902221";
+
+    public String SatellitIp = "192.168.51.91";
+    public double SatellitTime= 1.0;
+    public String SatellitPort = "2019";
+    public String SatellitMess = "";
+    public boolean SatellitFlagMess = true;
+    public String SatellitTelefon = "79117925169";
+    volatile  boolean shutdownSatellit = true;
 
     private boolean controlTimerMessFlag = false;
 
@@ -52,18 +68,18 @@ public class Controller implements Initializable {
             = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
 
-    private String ControlTelefon = "79816902221";
+
     private String ControlMessToServer;
     volatile  boolean shutdown = true;
     MySocketClient.ErrorType ErrorControl;
 
     private MySocketClient sockketControl;
+    private MySocketClient socketSatellit;
     MySocketClient.ComplectType Type;
 
-    public File fileIni;
+
     public File fileLogControl;
-    public File fileLogSattelit;
-    public File fileLogMagick;
+
 
     public void ClearLogChat(ActionEvent event) {
         taErrorMess.clear();
@@ -136,8 +152,7 @@ public class Controller implements Initializable {
                         ErrorControl = sockketControl.getError();
                         switch (ErrorControl){
                             case NO_ERROR:
-                                //lbControlState.setText("OK");
-                                //lbControlState.setTextFill(Color.GREEN);
+
                                 setState(sockketControl.complect, "OK");
                                 break;
                             case ERROR_DISCONECT:
@@ -152,11 +167,36 @@ public class Controller implements Initializable {
                             default:break;
                         }
                     }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        System.out.println(e);
+
+                }
+                if (!shutdownSatellit) {
+                    if(socketSatellit.getNewEvent()) {
+                        ErrorControl = sockketControl.getError();
+                        switch (ErrorControl){
+                            case NO_ERROR:
+
+                                setState(socketSatellit.complect, "OK");
+                                break;
+                            case ERROR_DISCONECT:
+                                setState(socketSatellit.complect, "ERROR_DISCONECT");
+                                break;
+                            case ERROR_MESS:
+                                setState(socketSatellit.complect, "ERROR_MESS");
+                                break;
+                            case ERROR_NO_ANSWER:
+                                setState(socketSatellit.complect, "ERROR_NO_ANSWER");
+                                break;
+                            default:break;
+                        }
                     }
+
+                }
+
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
                 }
             }
             System.out.println("-----count close------");
@@ -169,8 +209,7 @@ public class Controller implements Initializable {
             String nameComplect;
             SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Calendar cal = Calendar.getInstance();
-            /*SimpleDateFormat dateFile = new SimpleDateFormat("yyyy.MM.dd");
-            Calendar calFile = Calendar.getInstance();*/
+
             switch (complect) {
                 case CONTROL:
                     nameComplect = "Control";
@@ -234,6 +273,7 @@ public class Controller implements Initializable {
     public void shutsown(){
         shutdown = true  ;
     }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //setIsConnected(false);
@@ -241,6 +281,10 @@ public class Controller implements Initializable {
 
         sockketControl = new MySocketClient(ControlIp, ControlPort, ControlTime);
         sockketControl.setComplect(sockketControl.complect.CONTROL);
+
+
+        socketSatellit = new MySocketClient(SatellitIp, SatellitPort, SatellitTime);
+        socketSatellit.setComplect(socketSatellit.complect.SATELLIT);
 
         thread.setDaemon(true);
         thread.start();
@@ -251,6 +295,61 @@ public class Controller implements Initializable {
     public void shutdownAllTread() {
         shutdownErrorThread= true;
         sockketControl.stopSendMess();
+        socketSatellit.stopSendMess();
     }
 
+    public void SatellitStart(ActionEvent event) {
+        if (SatellitBut.isSelected()){
+            shutdownSatellit= false;
+            socketSatellit.startSendMess();
+            System.out.println("StartControl");
+            SatellitBut.setText("OFF");
+
+        }
+        else {
+            System.out.println("StopControl");
+
+            shutdownSatellit = true;
+            socketSatellit.stopSendMess();
+
+            lbSatellitState.setText("--");
+            lbSatellitState.setTextFill(Color.BLACK);
+            SatellitBut.setText("ON");
+        }
+    }
+
+    public void ConnectSatellit(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(Main.class.getResource("satellit.fxml"));
+        AnchorPane page = (AnchorPane) loader.load();
+        Satellit1 = loader.getController();
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Satellit");
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+        SatellitMess = Satellit1.msg;
+        socketSatellit.setParam(SatellitIp, SatellitPort, SatellitTime, SatellitMess, SatellitTelefon);
+        /*Satellit1.setFormControl(SatellitPort, SatellitMess, SatellitTelefon, SatellitIp, SatellitFlagMess, SatellitTime);
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Satellit");
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+        if (Satellit1.isOkClick()) {
+            SatellitMess = Satellit1.getMess();
+            SatellitTime = Satellit1.getTime();
+            lbSatellitTime.setText(String.valueOf(SatellitTime) + " мин");
+            SatellitIp = Satellit1.getIpAddr();
+            SatellitPort = Satellit1.getPortAddr();
+            lbSatellitServer.setText(SatellitIp + ":" + SatellitPort);
+            SatellitTelefon = Satellit1.getTelefon();
+            SatellitFlagMess = Satellit1.isFlagDefaultMess();
+            System.out.println(SatellitMess);
+            //SatellitMessToServer = "imei=" + SatellitTelefon + "&rmc=" + SatellitMess;
+            socketSatellit.setParam(SatellitIp, SatellitPort, SatellitTime, SatellitMess, SatellitTelefon);
+        }*/
+    }
 }

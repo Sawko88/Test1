@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><complects>
+    <complect>
+        <name>Control</name>
+        <IP>192.168.51.71</IP>
+        <Port>6009</Port>
+        <Mess>CODE 0C A00000000000000000000000000000000000000000000000000000000</Mess>
+        <Time>1.0</Time>
+    </complect>
+    <complect>
+        <name>Control</name>
+        <IP/>
+        <Port/>
+        <Mess/>
+        <Time/>
+    </complect>
+    <complect>
+        <name/>
+        <IP/>
+        <Port/>
+        <Mess/>
+        <Time/>
+    </complect>
+</complects>

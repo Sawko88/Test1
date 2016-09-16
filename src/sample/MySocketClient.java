@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import static sample.MySocketClient.ComplectType.*;
 import static sample.MySocketClient.ErrorType.*;
 
 /**
@@ -40,7 +41,7 @@ public class MySocketClient implements Initializable{
             = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
     private boolean isNew = false;
-
+    private String SatellitAUTHENTICATION = "AC5002088405000000000000000000032B373931313739323531363900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
     private boolean connected;
     public boolean isAutoConnected = false;
     private boolean isControlOn = false;
@@ -81,6 +82,7 @@ public class MySocketClient implements Initializable{
                 this.messToServer = "imei=" + telefon + "&rmc=" + this.mess;
                 break;
             case SATELLIT:
+                this.messToServer = mess;
                 break;
             case MAGICK:
                 break;
@@ -120,7 +122,7 @@ public class MySocketClient implements Initializable{
         System.out.println("----Start Send-----");
         isAutoConnected = true;
         autoConnect();
-        timerMessSend = new Timeline(new KeyFrame(Duration.minutes(timeSendMess), ae -> {
+        timerMessSend = new Timeline(new KeyFrame(Duration.minutes(timeSendMess/6), ae -> {
             SendMess();
         }));
         timerMessSend.setCycleCount(Animation.INDEFINITE);
@@ -136,7 +138,10 @@ public class MySocketClient implements Initializable{
 
     private void SendMess() {
         if (isConnected()) {
-            socket.sendMessage(messToServer);
+            /*if (complect == SATELLIT){
+                socket.sendMessage(SatellitAUTHENTICATION);
+            }*/
+            socket.sendMessage(messToServer, complect);
             TimerDelayMessStart();
         }
     }
@@ -215,7 +220,9 @@ public class MySocketClient implements Initializable{
                                     Integer.valueOf(port),
                                     Constants.instance().DEBUG_ALL);
                             socket.connect();
+
                         }
+
                         waitForDisconnect();
                         try {
                             Thread.sleep(10000);

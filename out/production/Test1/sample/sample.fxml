@@ -34,21 +34,21 @@
       <Label alignment="CENTER" layoutX="50.0" layoutY="105.0" prefHeight="25.0" prefWidth="59.0" text="ON/OFF" />
       <GridPane gridLinesVisible="true" layoutX="50.0" layoutY="130.0" prefHeight="121.0" prefWidth="706.0">
          <children>
-            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="63.0" prefWidth="580.0" GridPane.rowIndex="1">
+            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="42.0" prefWidth="706.0" GridPane.rowIndex="1">
                <items>
-                  <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="ToggleButton" />
+                  <ToggleButton fx:id="SatellitBut" mnemonicParsing="false" onAction="#SatellitStart" prefHeight="25.0" prefWidth="49.0" text="ON" />
                   <Separator orientation="VERTICAL" prefHeight="16.0" prefWidth="9.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="Satellit" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="75.0" text="Satellit" />
                   <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="64.0" text="Label" />
+                  <Label fx:id="lbSatellitServer" alignment="CENTER" prefHeight="17.0" prefWidth="144.0" text="--" />
                   <Separator orientation="VERTICAL" prefHeight="18.0" prefWidth="0.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="77.0" text="Label" />
+                  <Label fx:id="lbSatellitTime" alignment="CENTER" prefHeight="17.0" prefWidth="66.0" text="--" />
                   <Separator layoutX="169.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="115.0" text="Label" />
+                  <Label fx:id="lbSatellitLastSend" alignment="CENTER" prefHeight="17.0" prefWidth="115.0" text="--" />
                   <Separator layoutX="339.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="Label" />
+                  <Label fx:id="lbSatellitState" alignment="CENTER" prefHeight="17.0" prefWidth="123.0" text="--" />
                   <Separator layoutX="381.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="31.0" text="Button" />
+                  <Button mnemonicParsing="false" onAction="#ConnectSatellit" prefHeight="25.0" prefWidth="31.0" text="Button" />
                </items>
             </ToolBar>
             <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="36.0" prefWidth="706.0">
@@ -68,19 +68,19 @@
                   <Button id="btnConnect" mnemonicParsing="false" onAction="#Connect" prefHeight="25.0" prefWidth="31.0" text="Открыть" textAlignment="CENTER" />
                </items>
             </ToolBar>
-            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="580.0" GridPane.rowIndex="2">
+            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="42.0" prefWidth="710.0" GridPane.rowIndex="2">
                <items>
-                  <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="ToggleButton" />
+                  <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="49.0" text="ON" />
                   <Separator orientation="VERTICAL" prefHeight="16.0" prefWidth="9.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="Magick" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="75.0" text="Magick" />
                   <Separator orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="64.0" text="Label" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="144.0" text="--" />
                   <Separator orientation="VERTICAL" prefHeight="18.0" prefWidth="0.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="77.0" text="Label" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="66.0" text="--" />
                   <Separator layoutX="169.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="115.0" text="Label" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="115.0" text="--" />
                   <Separator layoutX="339.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="Label" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="123.0" text="--" />
                   <Separator layoutX="381.0" layoutY="10.0" orientation="VERTICAL" prefHeight="32.0" prefWidth="3.0" />
                   <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="31.0" text="Button" />
                </items>
